@@ -6,3 +6,10 @@ It consists of a cluster of many processes and Qchan Web provides User Interface
 Qchan Web is one of client applicaitons of Qchan's REST API, implemented with client-side JavaScript.
 
 ![](https://raw.github.com/r7kamura/qchan-web/master/doc/png/overview.png)
+
+## Usage
+Run server by `rake`, then open http://localhost:4000 in your web browser.
+
+```sh
+rake
+```
