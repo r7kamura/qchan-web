@@ -1,1 +1,4 @@
-Qchan = {}
+Qchan = {
+  Repositories: {},
+  Views: {},
+}
