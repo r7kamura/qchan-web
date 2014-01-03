@@ -1,4 +1,4 @@
-class Qchan.User
+class Qchan.Models.User
   constructor: ->
     $.observable(@)
     @repository = Qchan.Repository.for('user')

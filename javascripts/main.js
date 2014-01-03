@@ -3,53 +3,10 @@
   var Qchan;
 
   Qchan = {
+    Models: {},
     Repositories: {},
     Views: {}
   };
-
-  Qchan.Controller = (function() {
-    function Controller() {
-      var _this = this;
-
-      $.observable(this);
-      this.user = new Qchan.User();
-      this.view = new Qchan.Views.Authentication();
-      this.on('load', function() {
-        if (this.hasUserAttributes()) {
-          this.setUserAttributes();
-        }
-        if (this.hasAccessToken()) {
-          return this.updateUser();
-        }
-      });
-      this.user.on('updated', function() {
-        return _this.view.render(_this.user);
-      });
-    }
-
-    Controller.prototype.updateUser = function() {
-      return this.user.trigger('updated');
-    };
-
-    Controller.prototype.hasAccessToken = function() {
-      return !!this.user.access_token;
-    };
-
-    Controller.prototype.setUserAttributes = function() {
-      return this.user.set(this.userAttributes());
-    };
-
-    Controller.prototype.hasUserAttributes = function() {
-      return !!Object.keys(this.userAttributes()).length;
-    };
-
-    Controller.prototype.userAttributes = function() {
-      return this.__userAttributes || (this.__userAttributes = Qchan.URIFragmentParser.parse(window.location.hash));
-    };
-
-    return Controller;
-
-  })();
 
   Qchan.Mediator = (function() {
     function Mediator() {
@@ -57,6 +14,42 @@
     }
 
     return Mediator;
+
+  })();
+
+  Qchan.Models.User = (function() {
+    function User() {
+      $.observable(this);
+      this.repository = Qchan.Repository["for"]('user');
+      this.keys = ['access_token', 'email', 'name'];
+      this.sync();
+    }
+
+    User.prototype.set = function(attributes) {
+      var key, _i, _len, _ref, _results;
+
+      _ref = this.keys;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        _results.push(this.repository.set(key, this[key] = attributes[key]));
+      }
+      return _results;
+    };
+
+    User.prototype.sync = function() {
+      var key, _i, _len, _ref, _results;
+
+      _ref = this.keys;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        _results.push(this[key] = this.repository.get(key));
+      }
+      return _results;
+    };
+
+    return User;
 
   })();
 
@@ -124,42 +117,6 @@
 
   })();
 
-  Qchan.User = (function() {
-    function User() {
-      $.observable(this);
-      this.repository = Qchan.Repository["for"]('user');
-      this.keys = ['access_token', 'email', 'name'];
-      this.sync();
-    }
-
-    User.prototype.set = function(attributes) {
-      var key, _i, _len, _ref, _results;
-
-      _ref = this.keys;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _results.push(this.repository.set(key, this[key] = attributes[key]));
-      }
-      return _results;
-    };
-
-    User.prototype.sync = function() {
-      var key, _i, _len, _ref, _results;
-
-      _ref = this.keys;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _results.push(this[key] = this.repository.get(key));
-      }
-      return _results;
-    };
-
-    return User;
-
-  })();
-
   Qchan.Views.Application = (function() {
     function Application() {
       Qchan.mediator = new Qchan.Mediator();
@@ -187,7 +144,7 @@
       Qchan.mediator.on('signedIn', function() {
         return _this.render();
       });
-      this.user = new Qchan.User();
+      this.user = new Qchan.Models.User();
       this.triggerIfSignedIn();
     }
 

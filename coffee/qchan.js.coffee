@@ -1,4 +1,5 @@
 Qchan = {
-  Repositories: {},
-  Views: {},
+  Models: {}
+  Repositories: {}
+  Views: {}
 }

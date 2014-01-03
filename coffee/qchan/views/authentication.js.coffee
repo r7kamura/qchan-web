@@ -12,7 +12,7 @@ class Qchan.Views.Authentication
     Qchan.mediator.on 'signedIn', =>
       @render()
 
-    @user = new Qchan.User()
+    @user = new Qchan.Models.User()
     @triggerIfSignedIn()
 
   render: ->
