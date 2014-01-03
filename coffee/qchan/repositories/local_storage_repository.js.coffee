@@ -1,4 +1,4 @@
-class Qchan.Repositories.LocalStorageRepository
+class Qchan.Repositories.LocalStorage
   get: (key) ->
     window.localStorage.getItem(key)
 

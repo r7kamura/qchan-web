@@ -53,18 +53,18 @@
 
   })();
 
-  Qchan.Repositories.LocalStorageRepository = (function() {
-    function LocalStorageRepository() {}
+  Qchan.Repositories.LocalStorage = (function() {
+    function LocalStorage() {}
 
-    LocalStorageRepository.prototype.get = function(key) {
+    LocalStorage.prototype.get = function(key) {
       return window.localStorage.getItem(key);
     };
 
-    LocalStorageRepository.prototype.set = function(key, value) {
+    LocalStorage.prototype.set = function(key, value) {
       return window.localStorage.setItem(key, value);
     };
 
-    return LocalStorageRepository;
+    return LocalStorage;
 
   })();
 
@@ -189,7 +189,7 @@
 
   })();
 
-  Qchan.Repository.register('user', new Qchan.Repositories.LocalStorageRepository());
+  Qchan.Repository.register('user', new Qchan.Repositories.LocalStorage());
 
   new Qchan.Views.Application();
 
