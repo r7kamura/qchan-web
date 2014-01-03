@@ -1,7 +1,33 @@
 class Qchan.Views.Authentication
-  constructor: ->
-    @template = $('#authentication-template').html()
-    @container = $('#authentication')
+  constructor: (element: @element) ->
+    @template = """
+      <div class="name">
+        welcome, {name}
+      </div>
+    """
 
-  render: (user) ->
-    @container.html($.render(@template, user))
+    Qchan.mediator.on 'load', =>
+      @updateUserWithURIFragments()
+
+    Qchan.mediator.on 'signedIn', =>
+      @render()
+
+    @user = new Qchan.User()
+    @triggerIfSignedIn()
+
+  render: ->
+    @element.html($.render(@template, @user))
+
+  updateUserWithURIFragments: ->
+    if @hasUserAttributes()
+      @user.set(@userAttributes())
+      @triggerIfSignedIn()
+
+  triggerIfSignedIn: ->
+    Qchan.mediator.trigger('signedIn') if @user.access_token
+
+  userAttributes: ->
+    @__userAttributes ||= Qchan.URIFragmentParser.parse(window.location.hash)
+
+  hasUserAttributes: ->
+    !!@userAttributes().access_token

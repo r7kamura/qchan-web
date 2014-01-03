@@ -51,6 +51,15 @@
 
   })();
 
+  Qchan.Mediator = (function() {
+    function Mediator() {
+      $.observable(this);
+    }
+
+    return Mediator;
+
+  })();
+
   Qchan.Repositories.LocalStorageRepository = (function() {
     function LocalStorageRepository() {}
 
@@ -151,27 +160,80 @@
 
   })();
 
-  Qchan.Views.Authentication = (function() {
-    function Authentication() {
-      this.template = $('#authentication-template').html();
-      this.container = $('#authentication');
+  Qchan.Views.Application = (function() {
+    function Application() {
+      Qchan.mediator = new Qchan.Mediator();
+      this.element = $('#application');
+      this.element.html("<header id=\"header\">\n  <h1>Qchan</h1>\n\n  <div class=\"authentication\">\n    <a href=\"http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000\">\n      sign in\n    </a>\n  </div>\n</header>\n<div id=\"main\"></div>");
+      this.header = new Qchan.Views.Header({
+        element: this.element.find('#header')
+      });
+      Qchan.mediator.trigger('load');
     }
 
-    Authentication.prototype.render = function(user) {
-      return this.container.html($.render(this.template, user));
+    return Application;
+
+  })();
+
+  Qchan.Views.Authentication = (function() {
+    function Authentication(_arg) {
+      var _this = this;
+
+      this.element = _arg.element;
+      this.template = "<div class=\"name\">\n  welcome, {name}\n</div>";
+      Qchan.mediator.on('load', function() {
+        return _this.updateUserWithURIFragments();
+      });
+      Qchan.mediator.on('signedIn', function() {
+        return _this.render();
+      });
+      this.user = new Qchan.User();
+      this.triggerIfSignedIn();
+    }
+
+    Authentication.prototype.render = function() {
+      return this.element.html($.render(this.template, this.user));
+    };
+
+    Authentication.prototype.updateUserWithURIFragments = function() {
+      if (this.hasUserAttributes()) {
+        this.user.set(this.userAttributes());
+        return this.triggerIfSignedIn();
+      }
+    };
+
+    Authentication.prototype.triggerIfSignedIn = function() {
+      if (this.user.access_token) {
+        return Qchan.mediator.trigger('signedIn');
+      }
+    };
+
+    Authentication.prototype.userAttributes = function() {
+      return this.__userAttributes || (this.__userAttributes = Qchan.URIFragmentParser.parse(window.location.hash));
+    };
+
+    Authentication.prototype.hasUserAttributes = function() {
+      return !!this.userAttributes().access_token;
     };
 
     return Authentication;
 
   })();
 
+  Qchan.Views.Header = (function() {
+    function Header(_arg) {
+      this.element = _arg.element;
+      this.authentication = new Qchan.Views.Authentication({
+        element: this.element.find('.authentication')
+      });
+    }
+
+    return Header;
+
+  })();
+
   Qchan.Repository.register('user', new Qchan.Repositories.LocalStorageRepository());
 
-  $(function() {
-    var controller;
-
-    controller = new Qchan.Controller;
-    return controller.trigger('load');
-  });
+  new Qchan.Views.Application();
 
 }).call(this);

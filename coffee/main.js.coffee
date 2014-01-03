@@ -1,5 +1,5 @@
+# Configuration.
 Qchan.Repository.register('user', new Qchan.Repositories.LocalStorageRepository())
 
-$ ->
-  controller = new Qchan.Controller
-  controller.trigger('load')
+# Create and start our application instance.
+new Qchan.Views.Application()
