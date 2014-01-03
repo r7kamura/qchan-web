@@ -22,7 +22,7 @@
       $.observable(this);
       this.repository = Qchan.Repository["for"]('user');
       this.keys = ['access_token', 'email', 'name'];
-      this.sync();
+      this.pull();
     }
 
     User.prototype.set = function(attributes) {
@@ -37,7 +37,7 @@
       return _results;
     };
 
-    User.prototype.sync = function() {
+    User.prototype.pull = function() {
       var key, _i, _len, _ref, _results;
 
       _ref = this.keys;
