@@ -7,7 +7,7 @@ class Qchan.Views.Authentication extends Qchan.View
 
   @TEMPLATE_AFTER_SIGNED_IN = """
     <div class="name">
-      welcome, {name}
+      {name}
     </div>
   """
 
@@ -17,11 +17,17 @@ class Qchan.Views.Authentication extends Qchan.View
     @on 'initialized', =>
       @render()
 
-    Qchan.mediator.on 'loaded', =>
-      @user.loadAttributesFromFragment()
+    Qchan.mediator.on 'rendered', =>
+      if (attributes = Qchan.URIFragmentParser.parse(window.location.hash)).access_token
+        @user.set(Qchan.URIFragmentParser.parse(window.location.hash))
+      else
+        @user.pull()
 
-    @user.on 'updated', ->
+    Qchan.mediator.on 'signedIn', =>
       @render()
+
+    @user.on 'signedIn', ->
+      Qchan.mediator.trigger 'signedIn'
 
   template: ->
     if @user.access_token

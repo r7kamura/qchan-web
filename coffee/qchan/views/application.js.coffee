@@ -7,6 +7,7 @@ class Qchan.Views.Application extends Qchan.View
 
   initialize: ->
     @header = new Qchan.Views.Header(@, '#header')
+    @main = new Qchan.Views.Main(@, '#main')
 
     Qchan.mediator.on 'initialized', =>
       @render()
