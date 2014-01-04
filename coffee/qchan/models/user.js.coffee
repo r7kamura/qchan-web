@@ -1,14 +1,15 @@
 class Qchan.Models.User
+  KEYS = ['access_token', 'email', 'name']
+
   constructor: ->
     $.observable(@)
     @repository = Qchan.Repository.for('user')
-    @keys = ['access_token', 'email', 'name']
     @pull()
 
   set: (attributes) ->
-    for key in @keys
+    for key in KEYS
       @repository.set(key, @[key] = attributes[key])
 
   pull: ->
-    for key in @keys
+    for key in KEYS
       @[key] = @repository.get(key)
