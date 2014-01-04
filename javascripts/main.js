@@ -31,14 +31,13 @@
     }
 
     User.prototype.set = function(attributes) {
-      var key, _i, _len, _results;
+      var key, _i, _len;
 
-      _results = [];
       for (_i = 0, _len = KEYS.length; _i < _len; _i++) {
         key = KEYS[_i];
-        _results.push(this.repository.set(key, this[key] = attributes[key]));
+        this.repository.set(key, this[key] = attributes[key]);
       }
-      return _results;
+      return this.trigger('updated');
     };
 
     User.prototype.pull = function() {
@@ -50,6 +49,14 @@
         _results.push(this[key] = this.repository.get(key));
       }
       return _results;
+    };
+
+    User.prototype.loadAttributesFromFragment = function() {
+      var attributes;
+
+      if ((attributes = Qchan.URIFragmentParser.parse(window.location.hash)).access_token) {
+        return this.set(attributes);
+      }
     };
 
     return User;
@@ -191,37 +198,16 @@
     Authentication.prototype.initialize = function() {
       var _this = this;
 
+      this.user = new Qchan.Models.User();
       this.on('initialized', function() {
         return _this.render();
       });
       Qchan.mediator.on('loaded', function() {
-        _this.updateUserWithURIFragments();
-        return _this.triggerIfSignedIn();
+        return _this.user.loadAttributesFromFragment();
       });
-      Qchan.mediator.on('signedIn', function() {
-        return _this.render();
+      return this.user.on('updated', function() {
+        return this.render();
       });
-      return this.user = new Qchan.Models.User();
-    };
-
-    Authentication.prototype.updateUserWithURIFragments = function() {
-      if (this.hasUserAttributes()) {
-        return this.user.set(this.userAttributes());
-      }
-    };
-
-    Authentication.prototype.triggerIfSignedIn = function() {
-      if (this.user.access_token) {
-        return Qchan.mediator.trigger('signedIn', this.user);
-      }
-    };
-
-    Authentication.prototype.userAttributes = function() {
-      return this.__userAttributes || (this.__userAttributes = Qchan.URIFragmentParser.parse(window.location.hash));
-    };
-
-    Authentication.prototype.hasUserAttributes = function() {
-      return !!this.userAttributes().access_token;
     };
 
     Authentication.prototype.template = function() {

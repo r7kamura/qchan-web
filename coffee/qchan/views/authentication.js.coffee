@@ -12,29 +12,16 @@ class Qchan.Views.Authentication extends Qchan.View
   """
 
   initialize: ->
+    @user = new Qchan.Models.User()
+
     @on 'initialized', =>
       @render()
 
     Qchan.mediator.on 'loaded', =>
-      @updateUserWithURIFragments()
-      @triggerIfSignedIn()
+      @user.loadAttributesFromFragment()
 
-    Qchan.mediator.on 'signedIn', =>
+    @user.on 'updated', ->
       @render()
-
-    @user = new Qchan.Models.User()
-
-  updateUserWithURIFragments: ->
-    @user.set(@userAttributes()) if @hasUserAttributes()
-
-  triggerIfSignedIn: ->
-    Qchan.mediator.trigger('signedIn', @user) if @user.access_token
-
-  userAttributes: ->
-    @__userAttributes ||= Qchan.URIFragmentParser.parse(window.location.hash)
-
-  hasUserAttributes: ->
-    !!@userAttributes().access_token
 
   template: ->
     if @user.access_token

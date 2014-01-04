@@ -7,9 +7,12 @@ class Qchan.Models.User
     @pull()
 
   set: (attributes) ->
-    for key in KEYS
-      @repository.set(key, @[key] = attributes[key])
+    @repository.set(key, @[key] = attributes[key]) for key in KEYS
+    @trigger('updated')
 
   pull: ->
     for key in KEYS
       @[key] = @repository.get(key)
+
+  loadAttributesFromFragment: ->
+    @set(attributes) if (attributes = Qchan.URIFragmentParser.parse(window.location.hash)).access_token
