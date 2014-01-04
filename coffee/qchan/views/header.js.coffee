@@ -12,5 +12,6 @@ class Qchan.Views.Header extends Qchan.View
   initialize: ->
     @authentication = new Qchan.Views.Authentication(@, '.authentication')
 
-    @on 'render', =>
+    @on 'initialized', =>
       @render()
+      @authentication.trigger('initialized')

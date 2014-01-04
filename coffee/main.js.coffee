@@ -5,5 +5,5 @@ Qchan.mediator = new Qchan.Mediator()
 # Create and start our application instance.
 new Qchan.Views.Application(null, '#application')
 
-Qchan.mediator.trigger('render')
-Qchan.mediator.trigger('load')
+Qchan.mediator.trigger('initialized')
+Qchan.mediator.trigger('loaded')

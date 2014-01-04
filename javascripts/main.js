@@ -166,12 +166,9 @@
       var _this = this;
 
       this.header = new Qchan.Views.Header(this, '#header');
-      Qchan.mediator.on('render', function() {
-        return _this.trigger('render');
-      });
-      return this.on('render', function() {
+      return Qchan.mediator.on('initialized', function() {
         _this.render();
-        return _this.header.trigger('render');
+        return _this.header.trigger('initialized');
       });
     };
 
@@ -194,10 +191,10 @@
     Authentication.prototype.initialize = function() {
       var _this = this;
 
-      this.on('render', function() {
+      this.on('initialized', function() {
         return _this.render();
       });
-      Qchan.mediator.on('load', function() {
+      Qchan.mediator.on('loaded', function() {
         _this.updateUserWithURIFragments();
         return _this.triggerIfSignedIn();
       });
@@ -253,8 +250,9 @@
       var _this = this;
 
       this.authentication = new Qchan.Views.Authentication(this, '.authentication');
-      return this.on('render', function() {
-        return _this.render();
+      return this.on('initialized', function() {
+        _this.render();
+        return _this.authentication.trigger('initialized');
       });
     };
 
@@ -268,8 +266,8 @@
 
   new Qchan.Views.Application(null, '#application');
 
-  Qchan.mediator.trigger('render');
+  Qchan.mediator.trigger('initialized');
 
-  Qchan.mediator.trigger('load');
+  Qchan.mediator.trigger('loaded');
 
 }).call(this);

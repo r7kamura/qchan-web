@@ -12,10 +12,10 @@ class Qchan.Views.Authentication extends Qchan.View
   """
 
   initialize: ->
-    @on 'render', =>
+    @on 'initialized', =>
       @render()
 
-    Qchan.mediator.on 'load', =>
+    Qchan.mediator.on 'loaded', =>
       @updateUserWithURIFragments()
       @triggerIfSignedIn()
 

@@ -8,9 +8,6 @@ class Qchan.Views.Application extends Qchan.View
   initialize: ->
     @header = new Qchan.Views.Header(@, '#header')
 
-    Qchan.mediator.on 'render', =>
-      @trigger('render')
-
-    @on 'render', =>
+    Qchan.mediator.on 'initialized', =>
       @render()
-      @header.trigger('render')
+      @header.trigger('initialized')
