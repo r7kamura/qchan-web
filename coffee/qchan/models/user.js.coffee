@@ -5,11 +5,17 @@ class Qchan.Models.User
     $.observable(@)
     @repository = Qchan.Repository.for('user')
 
+  signIn: (attributes) ->
+    if attributes.access_token
+      @set(attributes)
+    else
+      @pull()
+    @trigger('signedIn') if @hasCredentials()
+
   set: (attributes) ->
     for key, value of attributes
       @[key] = value
     @push()
-    @trigger('signedIn') if @hasCredentials()
 
   push: ->
     for key in KEYS
@@ -18,7 +24,6 @@ class Qchan.Models.User
   pull: ->
     for key in KEYS
       @[key] = @repository.get(key)
-    @trigger('signedIn') if @hasCredentials()
 
   hasCredentials: ->
     @access_token?

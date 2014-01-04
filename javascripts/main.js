@@ -29,6 +29,17 @@
       this.repository = Qchan.Repository["for"]('user');
     }
 
+    User.prototype.signIn = function(attributes) {
+      if (attributes.access_token) {
+        this.set(attributes);
+      } else {
+        this.pull();
+      }
+      if (this.hasCredentials()) {
+        return this.trigger('signedIn');
+      }
+    };
+
     User.prototype.set = function(attributes) {
       var key, value;
 
@@ -36,10 +47,7 @@
         value = attributes[key];
         this[key] = value;
       }
-      this.push();
-      if (this.hasCredentials()) {
-        return this.trigger('signedIn');
-      }
+      return this.push();
     };
 
     User.prototype.push = function() {
@@ -54,15 +62,14 @@
     };
 
     User.prototype.pull = function() {
-      var key, _i, _len;
+      var key, _i, _len, _results;
 
+      _results = [];
       for (_i = 0, _len = KEYS.length; _i < _len; _i++) {
         key = KEYS[_i];
-        this[key] = this.repository.get(key);
+        _results.push(this[key] = this.repository.get(key));
       }
-      if (this.hasCredentials()) {
-        return this.trigger('signedIn');
-      }
+      return _results;
     };
 
     User.prototype.hasCredentials = function() {
@@ -214,13 +221,7 @@
         return _this.render();
       });
       Qchan.mediator.on('rendered', function() {
-        var attributes;
-
-        if ((attributes = Qchan.URIFragmentParser.parse(window.location.hash)).access_token) {
-          return _this.user.set(Qchan.URIFragmentParser.parse(window.location.hash));
-        } else {
-          return _this.user.pull();
-        }
+        return _this.user.signIn(Qchan.URIFragmentParser.parse(window.location.hash));
       });
       Qchan.mediator.on('signedIn', function() {
         return _this.render();

@@ -18,10 +18,7 @@ class Qchan.Views.Authentication extends Qchan.View
       @render()
 
     Qchan.mediator.on 'rendered', =>
-      if (attributes = Qchan.URIFragmentParser.parse(window.location.hash)).access_token
-        @user.set(Qchan.URIFragmentParser.parse(window.location.hash))
-      else
-        @user.pull()
+      @user.signIn(Qchan.URIFragmentParser.parse(window.location.hash))
 
     Qchan.mediator.on 'signedIn', =>
       @render()
