@@ -1,23 +1,16 @@
-class Qchan.Views.Application
-  constructor: ->
-    Qchan.mediator = new Qchan.Mediator()
+class Qchan.Views.Application extends Qchan.View
+  @TEMPLATE = """
+    <header id="header"></header>
 
-    @element = $('#application')
-    @element.html(
-      """
-        <header id="header">
-          <h1>Qchan</h1>
+    <div id="main"></div>
+  """
 
-          <div class="authentication">
-            <a href="http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000">
-              sign in
-            </a>
-          </div>
-        </header>
-        <div id="main"></div>
-      """
-    )
+  initialize: ->
+    @header = new Qchan.Views.Header(@, '#header')
 
-    @header = new Qchan.Views.Header(element: @element.find('#header'))
+    Qchan.mediator.on 'render', =>
+      @trigger('render')
 
-    Qchan.mediator.trigger('load')
+    @on 'render', =>
+      @render()
+      @header.trigger('render')

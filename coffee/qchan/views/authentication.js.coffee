@@ -1,33 +1,43 @@
-class Qchan.Views.Authentication
-  constructor: (element: @element) ->
-    @template = """
-      <div class="name">
-        welcome, {name}
-      </div>
-    """
+class Qchan.Views.Authentication extends Qchan.View
+  @TEMPLATE = """
+    <a href="http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000">
+      sign in
+    </a>
+  """
+
+  @TEMPLATE_AFTER_SIGNED_IN = """
+    <div class="name">
+      welcome, {name}
+    </div>
+  """
+
+  initialize: ->
+    @on 'render', =>
+      @render()
 
     Qchan.mediator.on 'load', =>
       @updateUserWithURIFragments()
+      @triggerIfSignedIn()
 
     Qchan.mediator.on 'signedIn', =>
       @render()
 
     @user = new Qchan.Models.User()
-    @triggerIfSignedIn()
-
-  render: ->
-    @element.html($.render(@template, @user))
 
   updateUserWithURIFragments: ->
-    if @hasUserAttributes()
-      @user.set(@userAttributes())
-      @triggerIfSignedIn()
+    @user.set(@userAttributes()) if @hasUserAttributes()
 
   triggerIfSignedIn: ->
-    Qchan.mediator.trigger('signedIn') if @user.access_token
+    Qchan.mediator.trigger('signedIn', @user) if @user.access_token
 
   userAttributes: ->
     @__userAttributes ||= Qchan.URIFragmentParser.parse(window.location.hash)
 
   hasUserAttributes: ->
     !!@userAttributes().access_token
+
+  template: ->
+    if @user.access_token
+      $.render(@constructor.TEMPLATE_AFTER_SIGNED_IN, @user)
+    else
+      super
