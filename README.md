@@ -16,9 +16,7 @@ rake
 
 ## Architecture
 * View Tree
-* View Partitioning
-* View Communication
-* Model
+* Communication
 
 ### View Tree
 Our application consists of some view objects, having tree-structured relationship.
@@ -26,10 +24,6 @@ An upper view object has lower view objects.
 This is similar to the HTML element tree.
 While a child has a reference to its parent (to know the element where it should be rendered),
 the parent has no reference to its children.
-
-![](https://raw.github.com/r7kamura/qchan-web/master/doc/png/view-tree.png)
-
-### View Partitioning
 Views are partitioned by the following unit:
 
 * layout unit (header, footer, main, sidebar)
@@ -37,12 +31,15 @@ Views are partitioned by the following unit:
 * event manager unit (tab menu)
 * top-level unit (as a root node)
 
-### View Communication
+![](https://raw.github.com/r7kamura/qchan-web/master/doc/png/view-tree.png)
+
+### Communication
 All communication between view objects are done via Event.
 A global event manager called Mediator manages their events.
 Each view object subscribes to and triggers events on Medaitor to talk with other view objects.
 
-### Model
 Some view objects may have model object(s).
 Model can also be observable like Mediator to notify events to its owner.
 We can notify any model events to other view objects by sending the event from its owner to Mediator.
+
+![](https://raw.github.com/r7kamura/qchan-web/master/doc/png/communication.png)

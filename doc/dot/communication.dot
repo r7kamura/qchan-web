@@ -1,0 +1,10 @@
+digraph {
+  graph [ rankdir = BT ];
+
+  User -> Authentication [ label = "signedIn" ]
+  Authentication -> Mediator [ label = "signedIn" ]
+  Mediator -> Header [ label = "signedIn" ]
+  Mediator -> Main [ label = "signedIn" ]
+
+  { rank = same; Authentication; Header; Main }
+}
