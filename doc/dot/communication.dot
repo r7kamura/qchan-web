@@ -6,5 +6,8 @@ digraph {
   Mediator -> Header [ label = "signedIn" ]
   Mediator -> Main [ label = "signedIn" ]
 
+  Mediator [ shape = "box" ]
+  User [ shape = "diamond" ]
+
   { rank = same; Authentication; Header; Main }
 }
