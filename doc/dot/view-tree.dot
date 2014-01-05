@@ -1,0 +1,11 @@
+digraph {
+  graph [ rankdir = BT ];
+
+  Header -> Application
+  Main -> Application
+
+  Authentication -> Header
+
+  Jobs -> Main
+  Builds -> Main
+}

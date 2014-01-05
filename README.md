@@ -27,6 +27,8 @@ This is similar to the HTML element tree.
 While a child has a reference to its parent (to know the element where it should be rendered),
 the parent has no reference to its children.
 
+![](https://raw.github.com/r7kamura/qchan-web/master/doc/png/view-tree.png)
+
 ### View Partitioning
 Views are partitioned by the following unit:
 
