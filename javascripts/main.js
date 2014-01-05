@@ -7,7 +7,8 @@
   Qchan = {
     Models: {},
     Repositories: {},
-    Views: {}
+    Views: {},
+    configuration: {}
   };
 
   Qchan.Mediator = (function() {
@@ -209,7 +210,7 @@
       return _ref1;
     }
 
-    Authentication.TEMPLATE = "<a href=\"http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000\">\n  sign in\n</a>";
+    Authentication.TEMPLATE_BEFORE_SIGNED_IN = "<a href=\"{apiServerOrigin}/auth/authorize?redirect_to={clientServerOrigin}\">\n  sign in\n</a>";
 
     Authentication.TEMPLATE_AFTER_SIGNED_IN = "<div class=\"name\">\n  {name}\n</div>";
 
@@ -235,7 +236,10 @@
       if (this.user.access_token) {
         return $.render(this.constructor.TEMPLATE_AFTER_SIGNED_IN, this.user);
       } else {
-        return Authentication.__super__.template.apply(this, arguments);
+        return $.render(this.constructor.TEMPLATE_BEFORE_SIGNED_IN, {
+          apiServerOrigin: Qchan.configuration.apiServerOrigin,
+          clientServerOrigin: window.encodeURIComponent(Qchan.configuration.clientServerOrigin)
+        });
       }
     };
 
@@ -292,6 +296,10 @@
   Qchan.Repository.register('user', new Qchan.Repositories.LocalStorage());
 
   Qchan.mediator = new Qchan.Mediator();
+
+  Qchan.configuration.apiServerOrigin = 'http://localhost:3000';
+
+  Qchan.configuration.clientServerOrigin = 'http://localhost:4000';
 
   new Qchan.Views.Application(null, '#application');
 

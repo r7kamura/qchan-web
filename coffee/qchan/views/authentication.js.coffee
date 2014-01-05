@@ -1,6 +1,6 @@
 class Qchan.Views.Authentication extends Qchan.View
-  @TEMPLATE = """
-    <a href="http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000">
+  @TEMPLATE_BEFORE_SIGNED_IN = """
+    <a href="{apiServerOrigin}/auth/authorize?redirect_to={clientServerOrigin}">
       sign in
     </a>
   """
@@ -30,4 +30,8 @@ class Qchan.Views.Authentication extends Qchan.View
     if @user.access_token
       $.render(@constructor.TEMPLATE_AFTER_SIGNED_IN, @user)
     else
-      super
+      $.render(
+        @constructor.TEMPLATE_BEFORE_SIGNED_IN,
+        apiServerOrigin: Qchan.configuration.apiServerOrigin,
+        clientServerOrigin: window.encodeURIComponent(Qchan.configuration.clientServerOrigin),
+      )
