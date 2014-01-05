@@ -149,7 +149,6 @@
     function View(parent, selector) {
       this.parent = parent;
       this.selector = selector;
-      $.observable(this);
       this.initialize();
     }
 

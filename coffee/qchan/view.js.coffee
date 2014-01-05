@@ -1,6 +1,5 @@
 class Qchan.View
   constructor: (@parent, @selector) ->
-    $.observable(@)
     @initialize()
 
   initialize: ->
