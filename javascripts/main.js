@@ -190,12 +190,11 @@
     Application.prototype.initialize = function() {
       var _this = this;
 
-      this.header = new Qchan.Views.Header(this, '#header');
-      this.main = new Qchan.Views.Main(this, '#main');
-      return Qchan.mediator.on('initialized', function() {
-        _this.render();
-        return _this.header.trigger('initialized');
+      Qchan.mediator.on('initialized', function() {
+        return _this.render();
       });
+      new Qchan.Views.Header(this, '#header');
+      return new Qchan.Views.Main(this, '#main');
     };
 
     return Application;
@@ -217,8 +216,7 @@
     Authentication.prototype.initialize = function() {
       var _this = this;
 
-      this.user = new Qchan.Models.User();
-      this.on('initialized', function() {
+      Qchan.mediator.on('initialized', function() {
         return _this.render();
       });
       Qchan.mediator.on('rendered', function() {
@@ -227,6 +225,7 @@
       Qchan.mediator.on('signedIn', function() {
         return _this.render();
       });
+      this.user = new Qchan.Models.User();
       return this.user.on('signedIn', function() {
         return Qchan.mediator.trigger('signedIn');
       });
@@ -255,16 +254,15 @@
       return _ref2;
     }
 
-    Header.TEMPLATE = "<h1>Qchan</h1>\n\n<div class=\"authentication\">\n  <a href=\"http://localhost:3000/auth/authorize?redirect_to=http%3A%2F%2Flocalhost%3A4000\">\n    sign in\n  </a>\n</div>";
+    Header.TEMPLATE = "<h1>Qchan</h1>\n\n<div class=\"authentication\">\n</div>";
 
     Header.prototype.initialize = function() {
       var _this = this;
 
-      this.authentication = new Qchan.Views.Authentication(this, '.authentication');
-      return this.on('initialized', function() {
-        _this.render();
-        return _this.authentication.trigger('initialized');
+      Qchan.mediator.on('initialized', function() {
+        return _this.render();
       });
+      return new Qchan.Views.Authentication(this, '.authentication');
     };
 
     return Header;

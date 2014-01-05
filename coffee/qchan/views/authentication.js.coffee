@@ -12,9 +12,7 @@ class Qchan.Views.Authentication extends Qchan.View
   """
 
   initialize: ->
-    @user = new Qchan.Models.User()
-
-    @on 'initialized', =>
+    Qchan.mediator.on 'initialized', =>
       @render()
 
     Qchan.mediator.on 'rendered', =>
@@ -22,6 +20,8 @@ class Qchan.Views.Authentication extends Qchan.View
 
     Qchan.mediator.on 'signedIn', =>
       @render()
+
+    @user = new Qchan.Models.User()
 
     @user.on 'signedIn', ->
       Qchan.mediator.trigger 'signedIn'
